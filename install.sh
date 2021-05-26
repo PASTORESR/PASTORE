@@ -3,7 +3,7 @@ cd $HOME/PASTORE
 install() {
 rm -rf $HOME/.telegram-cli
 sudo chmod +x tg
-chmod +xPASTORE
+chmod +x PASTORE
 chmod +x Run
 ./Run
 }

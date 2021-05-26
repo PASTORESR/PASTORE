@@ -69,7 +69,7 @@ RunBot:write([[
 #!/usr/bin/env bash
 cd $HOME/PASTORE
 token="]]..database:get(Server_Done.."Token_Write")..[["
-rm -frPASTORE.lua
+rm -fr PASTORE.lua
 wget "https://raw.githubusercontent.com/PASTORESR/PASTORE/main/PASTORE.lua"
 while(true) do
 rm -fr ../.telegram-cli
@@ -83,8 +83,8 @@ RunTs:write([[
 cd $HOME/PASTORE
 while(true) do
 rm -fr ../.telegram-cli
-screen -SPASTORE -X kill
-screen -SPASTORE ./PASTORE
+screen -S PASTORE -X kill
+screen -S PASTORE ./PASTORE
 done
 ]])
 RunTs:close()
