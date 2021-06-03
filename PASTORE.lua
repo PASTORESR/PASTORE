@@ -6757,6 +6757,26 @@ end;end,nil)
 return false
 end
 
+if text == ("المقيدين") and Mod(msg) then
+local list = database:smembers(bot_id..'Muted:User:kid'..msg.chat_id_)
+t = "\n *⌯︙قائمة المقيديين* \n*•━━━━━━ 𝑷𝑨 ━━━━━━━•*\n"
+for k,v in pairs(list) do
+local username = database:get(bot_id.."user:Name" .. v)
+if username then
+t = t..""..k.."- ([@"..username.."])\n"
+else
+t = t..""..k.."- (`"..v.."`)\n"
+end
+end
+if #list == 0 then
+t = " *⌯︙لا يوجد مقيدين*"
+end
+send(msg.chat_id_, msg.id_, t)
+end
+if text == 'مسح المقيدين' and Mod(msg) then
+database:del(bot_id..'Muted:User:kid'..msg.chat_id_)
+send(msg.chat_id_, msg.id_, ' *⌯︙تم مسح المقيدين*')
+end
 if text == ("تقيد") and msg.reply_to_message_id_ and Mod(msg) then
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -6779,6 +6799,7 @@ end
 if Can_or_NotCan(result.sender_user_id_, msg.chat_id_) then
 send(msg.chat_id_, msg.id_, '\n *⌯︙عذرا لا تستطيع تقيد* ( '..Rutba(result.sender_user_id_,msg.chat_id_)..' )')
 else
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, result.sender_user_id_)
 https.request("https://api.telegram.org/bot"..token.."/restrictChatMember?chat_id="..msg.chat_id_.."&user_id="..result.sender_user_id_)
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
 usertext = '\n *⌯︙العضو -›* ['..data.first_name_..'](t.me/'..(data.username_ or 'ieeo3s')..')'
@@ -6819,6 +6840,7 @@ if Can_or_NotCan(result.id_, msg.chat_id_) then
 send(msg.chat_id_, msg.id_, '\n *⌯︙عذرا لا تستطيع تقيد* ( '..Rutba(result.id_,msg.chat_id_)..' )')
 return false 
 end  
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, result.id_)
 https.request("https://api.telegram.org/bot"..token.."/restrictChatMember?chat_id="..msg.chat_id_.."&user_id="..result.id_)
 usertext = '\n *⌯︙العضو -›* ['..result.title_..'](t.me/'..(username or 'ieeo3s')..')'
 status  = '\n*⌯︙تم تقيده*'
@@ -6861,6 +6883,7 @@ usertext = '\n *⌯︙العضو -›* ['..data.first_name_..'](t.me/'..(data.us
 status  = '\n*⌯︙تم تقيده لمدة ~* { '..TextEnd[2]..' '..TextEnd[3]..'}'
 send(msg.chat_id_, msg.id_, usertext..status)
 end,nil)
+
 https.request("https://api.telegram.org/bot"..token.."/restrictChatMember?chat_id="..msg.chat_id_.."&user_id="..result.sender_user_id_..'&until_date='..tonumber(msg.date_+Time))
 end
 end
@@ -6931,6 +6954,7 @@ end
 if Can_or_NotCan(userid, msg.chat_id_) then
 send(msg.chat_id_, msg.id_, '\n *⌯︙عذرا لا تستطيع تقيد* ( '..Rutba(userid,msg.chat_id_)..' )')
 else
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, userid)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" ..userid)
 tdcli_function ({ID = "GetUser",user_id_ = userid},function(arg,data) 
 if data.first_name_ then
@@ -6957,6 +6981,7 @@ end
 return false
 end
 function start_function(extra, result, success)
+database:srem(bot_id..'Muted:User:kid'..msg.chat_id_, result.sender_user_id_)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.sender_user_id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
 usertext = '\n *⌯︙العضو -›* ['..data.first_name_..'](t.me/'..(data.username_ or 'ieeo3s')..')'
@@ -6981,6 +7006,7 @@ return false
 end
 function start_function(extra, result, success)
 if result.id_ then
+database:srem(bot_id..'Muted:User:kid'..msg.chat_id_, result.id_)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 usertext = '\n *⌯︙العضو -›* ['..result.title_..'](t.me/'..(username or 'ieeo3s')..')'
 status  = '\n*⌯︙تم الغاء تقيد*'
@@ -7005,6 +7031,7 @@ send(msg.chat_id_, msg.id_,'  *⌯︙عذࢪا عليڪ الاشتࢪاڪ في �
 end
 return false
 end
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, userid)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" ..userid.. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 tdcli_function ({ID = "GetUser",user_id_ = userid},function(arg,data) 
 if data.first_name_ then
@@ -7018,6 +7045,7 @@ send(msg.chat_id_, msg.id_, usertext..status)
 end;end,nil)
 return false
 end
+
 if text and text:match('^رفع القيود @(.*)') and Manager(msg) then 
 local username = text:match('^رفع القيود @(.*)') 
 if AddChannel(msg.sender_user_id_) == false then
@@ -9535,7 +9563,15 @@ return false
 end
 if text == 'بوت' then
 Namebot = (database:get(bot_id..'Name:Bot') or 'باستوري')
-send(msg.chat_id_, msg.id_,'*اسمي '..Namebot..'* ')
+local nameee = {
+'اسمي '..Namebot..'',
+'راح نموت بكورونا ونته بعدك تصيح بوت',
+'لتخليني ارجع لحركاتي لقديمه وردا ترا اسمي '..Namebot,
+'لتكول بوت اسمي '..Namebot..' 😒🔪',
+'صيحولي '..Namebot..' كافي بوت 😒🔪',
+'اسمي القميل '..Namebot..' 😚♥️'
+}
+send(msg.chat_id_, msg.id_,nameee[math.random(#nameee)])
 end
 if text == 'الاحصائيات' then
 if Sudo(msg) then 
@@ -10345,9 +10381,7 @@ end
 getChannelFull(msg.chat_id_, gpinfo, nil) 
 end
 -----------
-if text ==("مسح") and Mod(msg) and tonumber(msg.reply_to_message_id_) > 0 then
-DeleteMessage(msg.chat_id_,{[0] = tonumber(msg.reply_to_message_id_),msg.id_})   
-end   
+
 if database:get(bot_id.."numadd:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_) then 
 if text and text:match("^الغاء$") then 
 database:del(bot_id..'id:user'..msg.chat_id_)  
